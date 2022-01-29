@@ -1,0 +1,19 @@
+## virtaul_domains table create
+
+CREATE TABLE `virtual_domains` ( `id` INT(11) NOT NULL AUTO_INCREMENT, `name` VARCHAR(50) NOT NULL COLLATE 'utf8_general_ci', PRIMARY KEY (`id`) USING BTREE ) COLLATE='utf8_general_ci' ENGINE=InnoDB AUTO_INCREMENT=2 ;
+
+
+## virtual_domains tables insert
+INSERT INTO `mailbox`.`virtual_domains` (`id` ,`name`) VALUES ('1', '[mail.hjproject.kro.kr(사용자 도메인 주소)]');
+
+
+
+## virtual_users table create
+CREATE TABLE `virtual_users` ( `id` INT(11) NOT NULL AUTO_INCREMENT, `domain_id` INT(11) NOT NULL, `password` VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', `email` VARCHAR(120) NOT NULL COLLATE 'utf8_general_ci', `box` VARCHAR(120) NOT NULL COLLATE 'utf8_general_ci', PRIMARY KEY (`id`) USING BTREE, UNIQUE INDEX `email` (`email`) USING BTREE, INDEX `domain_id` (`domain_id`) USING BTREE, CONSTRAINT `virtual_users_ibfk_1` FOREIGN KEY (`domain_id`) REFERENCES `mailbox`.`virtual_domains` (`id`) ON UPDATE RESTRICT ON DELETE CASCADE ) COLLATE='utf8_general_ci' ENGINE=InnoDB AUTO_INCREMENT=5 ;
+
+
+## virtual_users table insert
+INSERT INTO `mailbox`.`virtual_users` (`id`, `domain_id`, `password` , `email`, `box`) VALUES ('1', '1[사용할 도메인의 id', ENCRYPT('[패스워드]', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16))), 'test@mail.hjproject.kro.kr[사용할 이메일 주소]', 'test[이메일에서 유저]');
+
+## virtual_users table update
+UPDATE virtual_users SET PASSWORD = ENCRYPT('[패스워드]', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16))) WHERE id = [virtual_user id number];

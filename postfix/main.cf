@@ -1,0 +1,62 @@
+# SMTP 접속 시 배너
+smtpd_banner = $myhostname ESMTP $mail_name:My_Mailbox
+biff = no
+
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters : TLS 설정 파라미터
+smtpd_use_tls=yes
+smtpd_tls_auth_only = yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtpd_tls_security_level = may
+smtp_tls_security_level = may
+
+smtp_use_tls = yes
+smtpd_tls_received_header = yes
+smtpd_tls_ask_ccert = yes
+smtpd_tls_loglevel = 4
+
+# SSL 파일 위치 적기
+smtpd_tls_cert_file = /etc/postfix/ssl/[SSL_file]
+smtpd_tls_key_file = /etc/postfix/ssl/[SSL_file]
+
+# smtp 인증 시 dovecot 연동한다는 의미
+smtpd_sasl_type = dovecot 
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+smtpd_recipient_restrictions = permit_sasl_authenticated permit_mynetworks reject_unauth_destination
+#smtpd_relay_restrictions = permit_mynetworks,permit_sasl_authenticated,reject_unauth_destination
+
+smtpd_tls_security_level = may
+
+#### 매우 중요 ####
+# 가상 전송,도메인, 메일박스(유저) 설정하는 내용 #
+# transport 에서 lmtp 를 사용한다는 것을 기억해두어야함 #
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+virtual_mailbox_domains = mysql:/etc/postfix/mysql/virtual_domains_maps.cf
+virtual_mailbox_maps = mysql:/etc/postfix/mysql/virtual_mailbox_maps.cf
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+#smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+
+myhostname = [메일 도메인]
+myorigin = /etc/mailname
+mydestination = localhost
+relayhost = 
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = all
+
+compatibility_level = 2
+relay_domains = $mydestination

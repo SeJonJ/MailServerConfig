@@ -1,0 +1,5 @@
+user = [DB id]
+password = [DB pass]
+hosts = [DB ip]
+dbname = [DB name]
+query = SELECT box FROM virtual_users WHERE email = '%s'
